@@ -187,7 +187,7 @@ BookList find_book_by_year (unsigned int year){
 int main( int argc, char **argv )
 {
    FILE *fp=fopen("books.txt","r");
-   FILE *fp2=fopen("data3.txt","w");
+   
  if (fp == NULL ){
     printf("Error\nBook file does not exist: %s\n");
 	return 1;
@@ -196,9 +196,9 @@ int main( int argc, char **argv )
 	load_books(fp);
     fclose(fp);
     char *xx="jiangshuo";
-
-    store_books(fp2);
-    fclose(fp2);
+    FILE *fp=fopen("books.txt","w+");
+    store_books(fp);
+    fclose(fp);
   
     BookList x=find_book_by_author(xx);
    

@@ -222,28 +222,28 @@ BookList find_book_by_year (unsigned int year){
 
 
 
-int main( int argc, char **argv )
-{
-   FILE *fp=fopen("books.txt","r");
-   FILE *fp2=fopen("data3.txt","w");
- if (fp == NULL ){
-    printf("Error\nBook file does not exist: %s\n");
-	return 1;
-	exit(0);
-     }
-	load_books(fp);
-    fclose(fp);
-    char *xx="jiangshuo";
+// int main( int argc, char **argv )
+// {
+//    FILE *fp=fopen("books.txt","r");
+//    FILE *fp2=fopen("data3.txt","w");
+//  if (fp == NULL ){
+//     printf("Error\nBook file does not exist: %s\n");
+// 	return 1;
+// 	exit(0);
+//      }
+// 	load_books(fp);
+//     fclose(fp);
+//     char *xx="jiangshuo";
 
-    store_books(fp2);
-    fclose(fp2);
+//     store_books(fp2);
+//     fclose(fp2);
   
-    BookList x=find_book_by_author(xx);
+//     BookList x=find_book_by_author(xx);
    
-    printf("%d %s %s %d %d\n",bgn->list->next->id,bgn->list->next->title,bgn->list->next->authors,bgn->list->next->year,bgn->list->next->copies);
-     printf("%d %s %s %d %d\n",x.list->id,x.list->title,x.list->authors,x.list->year,x.list->copies);
-      printf("%d %s %s %d %d",x.list->next->id,x.list->next->title,x.list->next->authors,x.list->next->year,x.list->next->copies);
+//     printf("%d %s %s %d %d\n",bgn->list->next->id,bgn->list->next->title,bgn->list->next->authors,bgn->list->next->year,bgn->list->next->copies);
+//      printf("%d %s %s %d %d\n",x.list->id,x.list->title,x.list->authors,x.list->year,x.list->copies);
+//       printf("%d %s %s %d %d",x.list->next->id,x.list->next->title,x.list->next->authors,x.list->next->year,x.list->next->copies);
       
-	return 0;
+// 	return 0;
     
-}
+// }

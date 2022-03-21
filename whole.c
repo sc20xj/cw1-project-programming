@@ -1,10 +1,10 @@
-#include "projectheader.h"
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 
 #include"myutility.h"
-load_books();
+#include"projectheader.h"
 BookList *bgn=0;
 Userlist *userbgn=0;
 FILE *user=0;
@@ -12,36 +12,7 @@ FILE *userstore=0;
 FILE *fp=0;
 FILE *fp2=0;
 User *userfinal=0;
-void librarycil(){
-   int libraryopen=1;
-   int option;
-   while(libraryopen){
-       printf("\n Please choose an option\n 1) Register an account\n 2) Login\n 3) Search for books\n 4)Display all books\n 5)Quit\n Choice:");
-       option = optionChoice();
-       if( option == 1 ) {
-            printf("\nRegister an account\n");
-            registerCLI(  );
-        }
-        else if( option == 2 ) {
-            printf("\nLogin\n");
-            loginCLI( );
-        }
-        else if( option == 3 ) {
-            printf("\n Search for books\n");
-            searchbooks();
-        }
-        else if(option==4){
-            printf("\n Display all books\n");
-            display();
-        }
-        else if (option==5){
-            libraryopen=0;
-             printf("\n See you\n");
-             closelibrary();
-        }
-        
-    }
-   }
+
 
 void display(){
     Book* liststart=bgn->list->next;
@@ -81,7 +52,7 @@ void searchbooks(){
 }
 
 
-int load_books(FILE *file){
+int load_user(FILE *file){
      if (file == NULL ){
     printf("Error\nUser file does not exist: %s\n");
 	return 1;
@@ -89,7 +60,7 @@ int load_books(FILE *file){
      }
 	userfinal=(User*)malloc(sizeof(User));
 	
-	userbgn=(User*)malloc(sizeof(User));
+	userbgn=(Userlist*)malloc(sizeof(Userlist));
     userbgn->list=userfinal;
     userbgn->length=0;
     while (!feof(file))
@@ -129,14 +100,23 @@ while(userbgn->list->next!=NULL){
 
 void registerCLI(){
     User *userstart=userbgn->list->next;
+    start:
     printf("\n Please enter the user name\n");
     char name[1000];
     scanf("%s",name);
     getchar();
+    while(userbgn->list->next!=NULL){
+        if(strcmp(userbgn->list->next->name,name)==0){
+            printf("Error,this name has already been used.");
+            userbgn->list->next=userstart;
+            goto start;
+        }
+    }
     printf("\n Please enter the password\n");
     char password[1000];
     scanf("%s",password);
     getchar();
+
     while(userbgn->list->next!=NULL){
         userbgn->list->next=userbgn->list->next->next;
     }
@@ -149,5 +129,88 @@ void registerCLI(){
 }
 
 void loginCLI(){
-    char* ajkdlaj;
+    int a=0;
+    int b=0;
+    User *userstart=userbgn->list->next;
+    start:
+     printf("\n Please enter the user name\n");
+    char name[1000];
+    scanf("%s",name);
+    getchar();
+    while(userbgn->list->next!=NULL){
+        if(strcmp(userbgn->list->next->name,name)==0){
+           a+=1;
+           userbgn->list->next=userstart;
+           break;  
+        }
+    }
+    if(a==0){
+         printf("\n Error, there is no that name\n");
+        goto start;
+    }
+    start2:
+    printf("\n Please enter the password\n");
+    char password[1000];
+    scanf("%s",password);
+    getchar();
+     while(userbgn->list->next!=NULL){
+        if(strcmp(userbgn->list->next->password,password)==0){
+           b+=1;
+           userbgn->list->next=userstart;
+           break;  
+        }
+    }
+    if(b==0){
+        printf("\n Error, the password is wrong\n");
+        goto start2;
+    }
+    printf("\n Successfully Logined\n");
+
+}
+
+void librarycil(){
+   int libraryopen=1;
+   int option;
+   while(libraryopen){
+       printf("\n Please choose an option\n 1) Register an account\n 2) Login\n 3) Search for books\n 4)Display all books\n 5)Quit\n Choice:");
+       option = optionChoice();
+       if( option == 1 ) {
+            printf("\nRegister an account\n");
+            registerCLI(  );
+        }
+        else if( option == 2 ) {
+            printf("\nLogin\n");
+            loginCLI( );
+        }
+        else if( option == 3 ) {
+            printf("\n Search for books\n");
+            searchbooks();
+        }
+        else if(option==4){
+            printf("\n Display all books\n");
+            display();
+        }
+       
+        
+    }
+   }
+
+
+int main( int argc, char **argv )
+{
+    BookList *bgn=0;
+    Userlist *userbgn=0; 
+   FILE *user=fopen("user.txt","r");
+   FILE *fp =fopen("books.txt","r");
+   load_books(fp);
+   load_user(user);
+
+
+User *userfinal=0;
+
+   librarycil();
+    
+    
+
+    return 0;
 }
