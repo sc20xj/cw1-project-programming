@@ -149,5 +149,5 @@ void registerCLI(){
 }
 
 void loginCLI(){
-    
+    char* ajkdlaj;
 }
