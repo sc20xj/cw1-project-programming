@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "projectheader.h": "c",
+        "librarystructures.h": "c",
+        "library.h": "c"
+    }
+}
