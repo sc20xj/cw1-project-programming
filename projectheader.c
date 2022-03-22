@@ -64,12 +64,23 @@ int add_book(Book book){
    
      Book* liststart=bgn->list->next;
      Book* aimbook=&book;
-     
+     int a=0;
+    while(bgn->list->next!=NULL){
+        if(strcmp(bgn->list->next->title,book.title)==0){
+            a=1;
+            break;
+        }
+    }
+    if(a==1){
+        bgn->list->next->copies+=1;
+    }
+    else{
     while(bgn->list->next!=NULL){
         bgn->list->next=bgn->list->next->next;
     }
     bgn->list->next=aimbook;
     bgn->list->next=liststart;
+    }
     return 0;
 }
 
@@ -116,7 +127,7 @@ BookList find_book_by_title (const char *title){
     findbytitle.length=0; 
     Book* booknew=(Book*)malloc(sizeof(Book));
     Book* start=booknew;
-    
+    int a=0;
     for (int i=0; i< bgn->length; i++) {
 			if (!strcmp(bgn->list->next->title, title)){  
                    
@@ -130,11 +141,15 @@ BookList find_book_by_title (const char *title){
                  
                booknew->next=(Book*)malloc(sizeof(Book));
               booknew=booknew->next;
+              a+=1;
             }
             bgn->list->next=bgn->list->next->next;
          
            	  
 		}
+        if(a==0){
+            printf("\nError, no such title\n");
+        }
         booknew=NULL;
         findbytitle.list=start;
         bgn->list->next=liststart;
@@ -153,7 +168,7 @@ BookList find_book_by_author (const char *author){
     findbyauthor.length=0; 
     Book* booknew=(Book*)malloc(sizeof(Book));
     Book* start=booknew;
-    
+    int a=0;
     for (int i=0; i< bgn->length; i++) {
 			if (!strcmp(bgn->list->next->authors, author)){  
                    
@@ -167,12 +182,15 @@ BookList find_book_by_author (const char *author){
                  
                booknew->next=(Book*)malloc(sizeof(Book));
                booknew=booknew->next;
-              
+               a+=1;
             }
             bgn->list->next=bgn->list->next->next;
          
            	  
 		}
+        if(a==0){
+            printf("\nError, no such author\n");
+        }
         booknew=NULL;
         findbyauthor.list=start;
         bgn->list->next=liststart;
@@ -192,7 +210,7 @@ BookList find_book_by_year (unsigned int year){
     findbyyear.length=0; 
     Book* booknew=(Book*)malloc(sizeof(Book));
     Book* start=booknew;
-    
+    int a=0;
     for (int i=0; i< bgn->length; i++) {
 			if (bgn->list->next->year==year){  
                    
@@ -206,13 +224,16 @@ BookList find_book_by_year (unsigned int year){
                  
                booknew->next=(Book*)malloc(sizeof(Book));
                booknew=booknew->next;
-              
+              a+=1;
             }
             bgn->list->next=bgn->list->next->next;
             
          
            	  
 		}
+        if(a==0){
+            printf("\nError, no such year\n");
+        }
         booknew=NULL;
         findbyyear.list=start;
         bgn->list->next=liststart;
@@ -222,28 +243,28 @@ BookList find_book_by_year (unsigned int year){
 
 
 
-// int main( int argc, char **argv )
-// {
-//    FILE *fp=fopen("books.txt","r");
-//    FILE *fp2=fopen("data3.txt","w");
-//  if (fp == NULL ){
-//     printf("Error\nBook file does not exist: %s\n");
-// 	return 1;
-// 	exit(0);
-//      }
-// 	load_books(fp);
-//     fclose(fp);
-//     char *xx="jiangshuo";
+int main( int argc, char **argv )
+{
+   FILE *fp=fopen("books.txt","r");
+   FILE *fp2=fopen("data3.txt","w");
+ if (fp == NULL ){
+    printf("Error\nBook file does not exist: %s\n");
+	return 1;
+	exit(0);
+     }
+	load_books(fp);
+    fclose(fp);
+    char *xx="jiangsho";
 
-//     store_books(fp2);
-//     fclose(fp2);
+    store_books(fp2);
+    fclose(fp2);
   
-//     BookList x=find_book_by_author(xx);
+    BookList x=find_book_by_author(xx);
    
-//     printf("%d %s %s %d %d\n",bgn->list->next->id,bgn->list->next->title,bgn->list->next->authors,bgn->list->next->year,bgn->list->next->copies);
-//      printf("%d %s %s %d %d\n",x.list->id,x.list->title,x.list->authors,x.list->year,x.list->copies);
-//       printf("%d %s %s %d %d",x.list->next->id,x.list->next->title,x.list->next->authors,x.list->next->year,x.list->next->copies);
+    printf("%d %s %s %d %d\n",bgn->list->next->id,bgn->list->next->title,bgn->list->next->authors,bgn->list->next->year,bgn->list->next->copies);
+     printf("%d %s %s %d %d\n",x.list->id,x.list->title,x.list->authors,x.list->year,x.list->copies);
+      printf("%d %s %s %d %d",x.list->next->id,x.list->next->title,x.list->next->authors,x.list->next->year,x.list->next->copies);
       
-// 	return 0;
+	return 0;
     
-// }
+}
