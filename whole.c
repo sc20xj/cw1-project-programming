@@ -5,7 +5,9 @@
 
 #include"myutility.h"
 #include"projectheader.h"
-BookList *bgn=0;
+#include"projectheader.c"
+#include"myutility.c"
+extern BookList* bgn;
 Userlist *userbgn=0;
 FILE *user=0;
 FILE *userstore=0;
@@ -100,6 +102,7 @@ while(userbgn->list->next!=NULL){
 
 void registerCLI(){
     User *userstart=userbgn->list->next;
+    printf("fuck");
     start:
     printf("\n Please enter the user name\n");
     char name[1000];
@@ -131,8 +134,10 @@ void registerCLI(){
 void loginCLI(){
     int a=0;
     int b=0;
+    int confirm=0;
+    int confirm2=0;
     User *userstart=userbgn->list->next;
-    start:
+    while(confirm!=0){
      printf("\n Please enter the user name\n");
     char name[1000];
     scanf("%s",name);
@@ -146,9 +151,12 @@ void loginCLI(){
     }
     if(a==0){
          printf("\n Error, there is no that name\n");
-        goto start;
     }
-    start2:
+    else{
+        confirm+=1;
+    }
+    }
+    while(confirm2!=0){
     printf("\n Please enter the password\n");
     char password[1000];
     scanf("%s",password);
@@ -162,10 +170,13 @@ void loginCLI(){
     }
     if(b==0){
         printf("\n Error, the password is wrong\n");
-        goto start2;
+        
     }
-    printf("\n Successfully Logined\n");
+    else{ printf("\n Successfully Logined\n");
+            confirm2=1;}
+   
 
+}
 }
 
 void librarycil(){
@@ -190,23 +201,36 @@ void librarycil(){
             printf("\n Display all books\n");
             display();
         }
+        // else if(option==5){
+        //     libraryopen=0;
+        //     closelibrary();
+        // }
        
         
     }
    }
+void listavailablebook(){
+     Book* liststart=bgn->list->next;
+     while(bgn->list->next!=NULL){
+         printf("%d %s %s %d %d\n",bgn->list->next->id,bgn->list->next->title,bgn->list->next->authors,bgn->list->next->year);
+         bgn->list->next=bgn->list->next->next;
+     }
+     bgn->list->next=liststart;
+}
 
 
 int main( int argc, char **argv )
 {
-    BookList *bgn=0;
-    Userlist *userbgn=0; 
+  
+    
    FILE *user=fopen("user.txt","r");
    FILE *fp =fopen("books.txt","r");
+  
    load_books(fp);
-   load_user(user);
+   
 
 
-User *userfinal=0;
+    User *userfinal=0;
 
    librarycil();
     
