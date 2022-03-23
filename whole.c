@@ -16,8 +16,9 @@ Userlist *userbgn=0;
 
 void display(){
     Book* liststart=bgn->list->next;
+    printf("%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
     while(bgn->list->next!=NULL){
-        printf("%d %s %s %d %d\n",bgn->list->next->id,bgn->list->next->title,bgn->list->next->authors,bgn->list->next->year,bgn->list->next->copies);
+        printf("%-10d\t%-10s\t%-10s\t%-10d\t%-10d\n",bgn->list->next->id,bgn->list->next->title,bgn->list->next->authors,bgn->list->next->year,bgn->list->next->copies);
         bgn->list->next=bgn->list->next->next;
     }
     bgn->list->next=liststart;
@@ -78,11 +79,7 @@ int load_user(FILE *file){
 		
         fscanf(file,"%s %s\n",user1->name,user1->password);
         userbgn->length+=1;
-        
-         
         userfinal=user1;
-		
-		
 	}
     
 	userfinal->next=NULL;
@@ -90,8 +87,7 @@ int load_user(FILE *file){
 	return 0;
     }
     else{
-        userbgn->list->next=NULL;
-        
+        userbgn->list->next=NULL;        
         return 0;
     }
     
@@ -113,37 +109,40 @@ while(userbgn->list->next!=NULL){
 
 void registerCLI(){
     User *userstart=userbgn->list->next;
-    
-    start:
+   start:
     printf("\n Please enter the user name\n");
     char name[1000];
     scanf("%s",name);
     getchar();
    
-    while(userbgn->list->next!=NULL){
-       
-        
+    while(userbgn->list->next!=NULL){      
         if(strcmp(userbgn->list->next->name,name)==0){
             printf("Error,this name has already been used.");
             userbgn->list->next=userstart;
             goto start;
         }
         userbgn->list->next=userbgn->list->next->next;
+       
     }
     printf("\n Please enter the password\n");
     char password[1000];
     scanf("%s",password);
     getchar();
-
-    while(userbgn->list->next!=NULL){
+    userbgn->list->next=userstart;
+    while(userbgn->list->next->next!=NULL){     
         userbgn->list->next=userbgn->list->next->next;
     }
-    User *new=(User*)malloc(sizeof(User));
-    new->name=name;
-    new->password=password;
-    userbgn->list->next=new;
+    User* new=(User*)malloc(sizeof(User));
+    new->name=(char *)malloc(1000*sizeof(char));
+    new->password=(char *)malloc(1000*sizeof(char));
+    userbgn->length+=1;
+    strcpy(new->name,name);
+    strcpy(new->password,password); 
+    userbgn->list->next->next=new;
     new->next=NULL;
     userbgn->list->next=userstart;
+    
+     
 }
 
 void loginCLI(){
@@ -158,6 +157,7 @@ void loginCLI(){
     char name[1000];
     scanf("%s",name);
    getchar();
+   
     while(userbgn->list->next!=NULL){
         if(strcmp(userbgn->list->next->name,name)==0){
            a+=1;
@@ -235,13 +235,18 @@ void librarycil(){
    }
 void listavailablebook(){
      Book* liststart=bgn->list->next;
+    printf("%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
      while(bgn->list->next!=NULL){
-         printf("%d %s %s %d %d\n",bgn->list->next->id,bgn->list->next->title,bgn->list->next->authors,bgn->list->next->year);
-         bgn->list->next=bgn->list->next->next;
+         if(bgn->list->next->copies>0){
+          printf("%-10d\t%-10s\t%-10s\t%-10d\t%-10d\n",bgn->list->next->id,bgn->list->next->title,bgn->list->next->authors,bgn->list->next->year,bgn->list->next->copies);
+         }
+        bgn->list->next=bgn->list->next->next;
      }
      bgn->list->next=liststart;
 }
-
+void Borrowbooks(){
+    
+}
 
 int main( int argc, char **argv )
 {
@@ -253,7 +258,7 @@ int main( int argc, char **argv )
    load_books(fp);
    load_user(user);
 
-
+   
    
 
    librarycil();

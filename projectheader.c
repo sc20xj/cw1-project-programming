@@ -73,21 +73,26 @@ int add_book(Book book){
      Book* liststart=bgn->list->next;
      Book* aimbook=&book;
      int a=0;
+    
     while(bgn->list->next!=NULL){
         if(strcmp(bgn->list->next->title,book.title)==0){
             a=1;
             break;
         }
-    }
-    if(a==1){
-        bgn->list->next->copies+=1;
-    }
-    else{
-    while(bgn->list->next!=NULL){
         bgn->list->next=bgn->list->next->next;
     }
-    bgn->list->next=aimbook;
     bgn->list->next=liststart;
+    if(a==1){
+        bgn->list->next->copies+=1;
+        bgn->list->next=liststart;
+    }
+    else{
+    while(bgn->list->next->next!=NULL){
+        bgn->list->next=bgn->list->next->next;
+    }
+    bgn->list->next->next=aimbook;
+    bgn->list->next=liststart;
+    aimbook->next=NULL;
     }
     return 0;
 }
@@ -107,9 +112,16 @@ int remove_book(Book book){
     if(bgn->list->next->id==book.id){
         if(bgn->list->next==liststart){
             bgn->list->next=liststart->next;
+            bgn->length-=1;
         }
         else{
-            bgn->list->next=bgn->list->next->next;
+            Book* temp=bgn->list->next;
+            bgn->list->next=liststart;
+            while(bgn->list->next->next!=temp){
+                bgn->list->next=bgn->list->next->next;
+            }
+            bgn->list->next->next=temp->next;
+            bgn->length-=1;
             bgn->list->next=liststart;
         }
         return 0;
@@ -267,11 +279,19 @@ BookList find_book_by_year (unsigned int year){
 //     store_books(fp2);
 //     fclose(fp2);
   
-//     BookList x=find_book_by_author(xx);
+//     Book one;
+//     one.authors="1";
+//     one.copies=1;
+//     one.id=1;
+//     one.title="akjsd";
+//     one.year=2002;
+//     remove_book(one);
    
-//     printf("%d %s %s %d %d\n",bgn->list->next->id,bgn->list->next->title,bgn->list->next->authors,bgn->list->next->year,bgn->list->next->copies);
-//      printf("%d %s %s %d %d\n",x.list->id,x.list->title,x.list->authors,x.list->year,x.list->copies);
-//       printf("%d %s %s %d %d",x.list->next->id,x.list->next->title,x.list->next->authors,x.list->next->year,x.list->next->copies);
+  
+//     while(bgn->list->next!=NULL){
+//          printf("%d %s %s %d %d\n",bgn->list->next->id,bgn->list->next->title,bgn->list->next->authors,bgn->list->next->year,bgn->list->next->copies);
+//          bgn->list->next=bgn->list->next->next;
+//     }
       
 // 	return 0;
     
