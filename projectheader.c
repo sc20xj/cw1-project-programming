@@ -4,7 +4,7 @@
 #include<string.h>
 
 
-Book* bookfinal=0;
+
 BookList *bgn=0;
 
 //saves the database of books in the specified file
@@ -32,11 +32,15 @@ int load_books(FILE *file){
 	return 1;
 	exit(0);
      }
-	 bookfinal=(Book*)malloc(sizeof(Book));
+	 Book* bookfinal=(Book*)malloc(sizeof(Book));
 	
 	bgn=(BookList*)malloc(sizeof(BookList));
     bgn->list=bookfinal;
     bgn->length=0;
+    char c=fgetc(file);
+
+    if(c!=EOF){
+        rewind(file);
     while (!feof(file))
 	{		
 		Book* book=(Book*)malloc(sizeof(Book));
@@ -50,11 +54,15 @@ int load_books(FILE *file){
         
          
         bookfinal=book;
-		
-		
 	}
 	bookfinal->next=NULL;
+    
 	return 0;
+    }
+    else{
+        bgn->list->next=NULL;
+        return 0;
+    }
     
 }
 
@@ -122,8 +130,7 @@ int remove_book(Book book){
 BookList find_book_by_title (const char *title){
    Book* liststart=bgn->list->next;
     BookList findbytitle;
-    findbytitle.list=0;
-   
+    findbytitle.list=0;  
     findbytitle.length=0; 
     Book* booknew=(Book*)malloc(sizeof(Book));
     Book* start=booknew;
@@ -233,6 +240,7 @@ BookList find_book_by_year (unsigned int year){
 		}
         if(a==0){
             printf("\nError, no such year\n");
+            
         }
         booknew=NULL;
         findbyyear.list=start;

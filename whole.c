@@ -7,13 +7,11 @@
 #include"projectheader.h"
 #include"projectheader.c"
 #include"myutility.c"
+
 extern BookList* bgn;
 Userlist *userbgn=0;
-FILE *user=0;
-FILE *userstore=0;
-FILE *fp=0;
-FILE *fp2=0;
-User *userfinal=0;
+
+
 
 
 void display(){
@@ -55,18 +53,23 @@ void searchbooks(){
 
 
 int load_user(FILE *file){
+    
      if (file == NULL ){
     printf("Error\nUser file does not exist: %s\n");
-	return 1;
+	exit(0);
 	
      }
-	userfinal=(User*)malloc(sizeof(User));
+	User* userfinal=(User*)malloc(sizeof(User));
 	
 	userbgn=(Userlist*)malloc(sizeof(Userlist));
     userbgn->list=userfinal;
     userbgn->length=0;
+    char c=fgetc(file);
+    if(c!=EOF){
+        rewind(file);
     while (!feof(file))
 	{		
+        
 		User* user1=(User*)malloc(sizeof(User));
 		userfinal->next=user1;
         
@@ -81,8 +84,16 @@ int load_user(FILE *file){
 		
 		
 	}
+    
 	userfinal->next=NULL;
+    
 	return 0;
+    }
+    else{
+        userbgn->list->next=NULL;
+        
+        return 0;
+    }
     
 }
 
@@ -102,18 +113,22 @@ while(userbgn->list->next!=NULL){
 
 void registerCLI(){
     User *userstart=userbgn->list->next;
-    printf("fuck");
+    
     start:
     printf("\n Please enter the user name\n");
     char name[1000];
     scanf("%s",name);
     getchar();
+   
     while(userbgn->list->next!=NULL){
+       
+        
         if(strcmp(userbgn->list->next->name,name)==0){
             printf("Error,this name has already been used.");
             userbgn->list->next=userstart;
             goto start;
         }
+        userbgn->list->next=userbgn->list->next->next;
     }
     printf("\n Please enter the password\n");
     char password[1000];
@@ -132,31 +147,34 @@ void registerCLI(){
 }
 
 void loginCLI(){
+    
     int a=0;
     int b=0;
     int confirm=0;
     int confirm2=0;
     User *userstart=userbgn->list->next;
-    while(confirm!=0){
+    while(confirm==0){
      printf("\n Please enter the user name\n");
     char name[1000];
     scanf("%s",name);
-    getchar();
+   getchar();
     while(userbgn->list->next!=NULL){
         if(strcmp(userbgn->list->next->name,name)==0){
            a+=1;
            userbgn->list->next=userstart;
            break;  
         }
+        userbgn->list->next=userbgn->list->next->next;
     }
     if(a==0){
          printf("\n Error, there is no that name\n");
+         userbgn->list->next=userstart;
     }
     else{
         confirm+=1;
     }
     }
-    while(confirm2!=0){
+    while(confirm2==0){
     printf("\n Please enter the password\n");
     char password[1000];
     scanf("%s",password);
@@ -167,9 +185,11 @@ void loginCLI(){
            userbgn->list->next=userstart;
            break;  
         }
+        userbgn->list->next=userbgn->list->next->next;
     }
     if(b==0){
         printf("\n Error, the password is wrong\n");
+        userbgn->list->next=userstart;
         
     }
     else{ printf("\n Successfully Logined\n");
@@ -201,6 +221,10 @@ void librarycil(){
             printf("\n Display all books\n");
             display();
         }
+        else if(option==5){
+            printf("%s",userbgn->list->next->name);
+            printf("%s",userbgn->list->next->next->name);
+        }
         // else if(option==5){
         //     libraryopen=0;
         //     closelibrary();
@@ -223,14 +247,14 @@ int main( int argc, char **argv )
 {
   
     
-   FILE *user=fopen("user.txt","r");
-   FILE *fp =fopen("books.txt","r");
-  
-   load_books(fp);
+   FILE *user=fopen("user.txt","r+");
+   FILE *fp =fopen("books.txt","r+");
    
+   load_books(fp);
+   load_user(user);
 
 
-    User *userfinal=0;
+   
 
    librarycil();
     
