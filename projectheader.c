@@ -38,18 +38,21 @@ int load_books(FILE *file){
     bgn->list=bookfinal;
     bgn->length=0;
     char c=fgetc(file);
-
+    
     if(c!=EOF){
         rewind(file);
     while (!feof(file))
 	{		
+        
 		Book* book=(Book*)malloc(sizeof(Book));
 		bookfinal->next=book;
         
         book->authors=(char *)malloc(100*sizeof(char));
         book->title=(char *)malloc(100*sizeof(char));
-		
+		book->history=(User*)malloc(sizeof(User));
+        book->history->next=NULL;
         fscanf(file,"%d %s %s %d %d\n",&book->id,book->title,book->authors,&book->year,&book->copies);
+        
         bgn->length+=1;
         
          
