@@ -52,7 +52,7 @@ int load_books(FILE *file){
 		book->history=(User*)malloc(sizeof(User));
         book->history->next=NULL;
         fscanf(file,"%d %s %s %d %d\n",&book->id,book->title,book->authors,&book->year,&book->copies);
-        
+        book->borrowed=0;
         bgn->length+=1;
         
          
@@ -160,7 +160,7 @@ BookList find_book_by_title (const char *title){
                 booknew->authors=bgn->list->next->authors;
                  booknew->title=bgn->list->next->title;
              
-                 
+                 findbytitle.length+=1;
                booknew->next=(Book*)malloc(sizeof(Book));
               booknew=booknew->next;
               a+=1;
@@ -171,11 +171,12 @@ BookList find_book_by_title (const char *title){
 		}
         if(a==0){
             printf("\nError, no such title\n");
+            findbytitle.list=NULL;
+            return findbytitle;
         }
         booknew=NULL;
         findbytitle.list=start;
         bgn->list->next=liststart;
-       
         return findbytitle;
 }
 
@@ -201,7 +202,7 @@ BookList find_book_by_author (const char *author){
                 booknew->authors=bgn->list->next->authors;
                  booknew->title=bgn->list->next->title;
              
-                 
+                 findbyauthor.length+=1;
                booknew->next=(Book*)malloc(sizeof(Book));
                booknew=booknew->next;
                a+=1;
@@ -212,6 +213,8 @@ BookList find_book_by_author (const char *author){
 		}
         if(a==0){
             printf("\nError, no such author\n");
+            findbyauthor.list=NULL;
+            return findbyauthor;
         }
         booknew=NULL;
         findbyauthor.list=start;
@@ -228,33 +231,30 @@ BookList find_book_by_author (const char *author){
 BookList find_book_by_year (unsigned int year){
     Book* liststart=bgn->list->next;
     BookList findbyyear;
-    findbyyear.list=0;
+    
     findbyyear.length=0; 
     Book* booknew=(Book*)malloc(sizeof(Book));
     Book* start=booknew;
     int a=0;
     for (int i=0; i< bgn->length; i++) {
-			if (bgn->list->next->year==year){  
-                   
+			if(bgn->list->next->year==year){  
                booknew->id=bgn->list->next->id;
                booknew->year=bgn->list->next->year;
                booknew->copies=bgn->list->next->copies;
-                 
                 booknew->authors=bgn->list->next->authors;
                  booknew->title=bgn->list->next->title;
-             
-                 
                booknew->next=(Book*)malloc(sizeof(Book));
                booknew=booknew->next;
+               findbyyear.length+=1;
               a+=1;
             }
             bgn->list->next=bgn->list->next->next;
-            
-         
-           	  
+                	  
 		}
         if(a==0){
             printf("\nError, no such year\n");
+            findbyyear.list=NULL;
+            return findbyyear;
             
         }
         booknew=NULL;

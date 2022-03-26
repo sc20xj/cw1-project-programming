@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <ctype.h>
 #include "myutility.h"
 
 ////
@@ -14,16 +14,26 @@
 
 int optionChoice( void ) {
     int option = -1;
-    char line[80];
+    char line[800];
 
     // read in the current line as a string
-    fgets(line,80,stdin);
-
+    fgets(line,800,stdin);
+   
     // atoi() converts string to integer, returns 0 if could not convert
     option = (int)atoi(line);
-
-    return option;
+     if(strlen(line)>2&&option==0){
+         return -1;
+     }
+     else{
+        if(isdigit(line[0])==0){
+            return -1;
+        }
+        else{
+        return option;
+        }
 }
+     }
+    
 
 // remove newline character from the fgets() input
 
