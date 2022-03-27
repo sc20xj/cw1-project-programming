@@ -20,8 +20,11 @@ void display(){
     while(bgn->list->next!=NULL){
         printf("%-10d\t%-10s\t%-10s\t%-10d\t%-10d\n",bgn->list->next->id,bgn->list->next->title,bgn->list->next->authors,bgn->list->next->year,bgn->list->next->copies);
         bgn->list->next=bgn->list->next->next;
+         
     }
+   
     bgn->list->next=liststart;
+   
 }
 
 void searchbooks(){
@@ -34,8 +37,8 @@ void searchbooks(){
      
      
        if( option == 1 ) {
-            printf("\nSearch by title");
-            scanf("%s",searching);
+            printf("\nSearch by title\n");
+            scanf("%[^\n]",searching);
             getchar();
             BookList search;
             search=find_book_by_title(searching);
@@ -52,8 +55,8 @@ void searchbooks(){
             }
         }
         else if( option == 2 ) {
-            printf("\nSearch by author");
-            scanf("%s",searching);
+            printf("\nSearch by author\n");
+            scanf("%[^\n]",searching);
             getchar();
              BookList search;
             search=find_book_by_author(searching);
@@ -71,7 +74,7 @@ void searchbooks(){
         }
         else if( option == 3 ) {
             int x;
-            printf("\nSearch by year");
+            printf("\nSearch by year\n");
             x=optionChoice();
             if(x==-1){
                 printf("\n You should input a year \n");
@@ -108,7 +111,7 @@ void searchbooks(){
 
 
 int load_user(FILE *file){
-    
+    char buff[100];
      if (file == NULL ){
     printf("Error\nUser file does not exist: %s\n");
 	exit(0);
@@ -122,16 +125,26 @@ int load_user(FILE *file){
     char c=fgetc(file);
     if(c!=EOF){
         rewind(file);
-    while (!feof(file))
+    while (1)
 	{		
         
 		User* user1=(User*)malloc(sizeof(User));
-		userfinal->next=user1;
-        
+		
+       
         user1->name=(char *)malloc(100*sizeof(char));
         user1->password=(char *)malloc(100*sizeof(char));
 		
-        fscanf(file,"%s %s\n",user1->name,user1->password);
+       
+         fgets(buff,100,file);
+          if(feof(file)){
+            break;
+        }
+         
+         sscanf(buff,"\%[^\n]", user1->name);
+      
+        fgets(buff,100,file);
+         sscanf(buff,"\%[^\n]", user1->password);
+         userfinal->next=user1;
         user1->bookborrow=(Book*)malloc(sizeof(Book));
         user1->bookborrow->next=NULL;
         user1->number=0;
@@ -150,6 +163,8 @@ int load_user(FILE *file){
     
 }
 
+
+
 int store_user(FILE *file){
     User* userstart=userbgn->list->next;
    if (file == NULL ){
@@ -157,7 +172,8 @@ int store_user(FILE *file){
     exit(0);
 }
 while(userbgn->list->next!=NULL){
-    fprintf(file," %s %s \n",userbgn->list->next->name,userbgn->list->next->password);
+    fprintf(file,"%s\n",userbgn->list->next->name); 
+    fprintf(file,"%s\n",userbgn->list->next->password);
     userbgn->list->next=userbgn->list->next->next;
 }
   userbgn->list->next=userstart;
@@ -167,19 +183,16 @@ while(userbgn->list->next!=NULL){
 
 int load_history(FILE* file){
     Book* bookstart=bgn->list->next;
-    
+     char buff[100];
     while(bgn->list->next!=NULL){
         User* temp=bgn->list->next->history;
-        fscanf(file,"%d", &bgn->list->next->borrowed);
-       
-    
+        fscanf(file,"%d\n", &bgn->list->next->borrowed);
         for(int i=0;i<bgn->list->next->borrowed;i++){
-        
             User* new=(User*)malloc(sizeof(User));
-               
              bgn->list->next->history->next=new;
             bgn->list->next->history->next->name=(char*)malloc(100*sizeof(char));
-             fscanf(file,"%s", bgn->list->next->history->next->name);
+            fgets(buff,100,file);
+            sscanf(buff,"\%[^\n]", bgn->list->next->history->next->name);
              
              new->next=NULL;
              
@@ -201,9 +214,9 @@ int load_history(FILE* file){
 
 int store_history(FILE *file){ 
     while(bgn->list->next!=NULL){   
-         fprintf(file,"\n%d \t",bgn->list->next->borrowed);
+         fprintf(file,"%d\n",bgn->list->next->borrowed);
         while(bgn->list->next->history->next!=NULL){
-             fprintf(file,"%s\t",bgn->list->next->history->next->name);
+             fprintf(file,"%s\n",bgn->list->next->history->next->name);
               bgn->list->next->history->next= bgn->list->next->history->next->next;           
         }  
         bgn->list->next=bgn->list->next->next;
@@ -212,11 +225,12 @@ int store_history(FILE *file){
   
 }
 int load_borrow(FILE* file){
+    char buff1[100];
     User* userstart=userbgn->list->next;
     while(userbgn->list->next!=NULL){
         Book* temp=userbgn->list->next->bookborrow;
-         fscanf(file,"%d", &userbgn->list->next->number);
-     
+         fscanf(file,"%d\n", &userbgn->list->next->number);
+      
         for(int i=0;i<userbgn->list->next->number;i++){
         
             Book* new=(Book*)malloc(sizeof(Book));
@@ -224,7 +238,20 @@ int load_borrow(FILE* file){
              userbgn->list->next->bookborrow->next=new;
             userbgn->list->next->bookborrow->next->authors=(char*)malloc(100*sizeof(char));
             userbgn->list->next->bookborrow->next->title=(char*)malloc(100*sizeof(char));
-             fscanf(file,"%d %s %s %d", &userbgn->list->next->bookborrow->next->id,userbgn->list->next->bookborrow->next->authors,userbgn->list->next->bookborrow->next->title,&userbgn->list->next->bookborrow->next->year);
+            
+        fgets(buff1,100,file);
+        sscanf(buff1,"%d\n", &userbgn->list->next->bookborrow->next->id);
+      
+        fgets(buff1,100,file);
+         sscanf(buff1,"\%[^\n]", userbgn->list->next->bookborrow->next->title);
+       
+         fgets(buff1,100,file);
+         sscanf(buff1,"\%[^\n]", userbgn->list->next->bookborrow->next->authors);
+       
+         fgets(buff1,100,file);
+         sscanf(buff1,"%d\n", &userbgn->list->next->bookborrow->next->year);
+      
+           
              new->next=NULL;
              
              userbgn->list->next->bookborrow=new;
@@ -242,9 +269,12 @@ int load_borrow(FILE* file){
 
 int store_borrowed(FILE *file){
     while(userbgn->list->next!=NULL){
-        fprintf(file,"\n%d \t",userbgn->list->next->number);
+        fprintf(file,"%d\n",userbgn->list->next->number);
        while(userbgn->list->next->bookborrow->next!=NULL){
-            fprintf(file,"%d\t%s\t%s\t%d\t",userbgn->list->next->bookborrow->next->id,userbgn->list->next->bookborrow->next->authors,userbgn->list->next->bookborrow->next->title,userbgn->list->next->bookborrow->next->year);
+            fprintf(file,"%d\n",userbgn->list->next->bookborrow->next->id);
+            fprintf(file,"%s\n",userbgn->list->next->bookborrow->next->title);
+             fprintf(file,"%s\n",userbgn->list->next->bookborrow->next->authors);
+              fprintf(file,"%d\n",userbgn->list->next->bookborrow->next->year);
             userbgn->list->next->bookborrow->next=userbgn->list->next->bookborrow->next->next;
        }
        userbgn->list->next=userbgn->list->next->next;
@@ -254,14 +284,21 @@ int store_borrowed(FILE *file){
 
 
 
-void registerCLI(){
+int registerCLI(){
     User *userstart=userbgn->list->next;
-   start:
-    printf("\n Please enter the user name\n");
-    char name[1000];
-    scanf("%s",name);
-    fflush(stdin);
+    
+    User * userstart2=userbgn->list;
    
+
+   start:
+    printf("\n Please enter the user name(input quit to return)\n");
+    char name[1000];
+    scanf("%[^\n]",name);
+    fflush(stdin);
+   if(strcmp(name,"quit")==0){
+         fflush(stdin);
+        return 0;
+    }
     while(userbgn->list->next!=NULL){      
         if(strcmp(userbgn->list->next->name,name)==0){
             printf("Error,this name has already been used.");
@@ -273,22 +310,33 @@ void registerCLI(){
     }
     printf("\n Please enter the password\n");
     char password[1000];
-    scanf("%s",password);
+    scanf("%[^\n]",password);
      fflush(stdin);
     userbgn->list->next=userstart;
-    while(userbgn->list->next->next!=NULL){     
-        userbgn->list->next=userbgn->list->next->next;
+    while(userbgn->list->next!=NULL){     
+        userbgn->list=userbgn->list->next;
     }
+    
     User* new=(User*)malloc(sizeof(User));
     new->name=(char *)malloc(1000*sizeof(char));
     new->password=(char *)malloc(1000*sizeof(char));
+    new->bookborrow=(Book*)malloc(sizeof(Book));
+    new->bookborrow->next=NULL;
+    new->number=0;
     userbgn->length+=1;
     strcpy(new->name,name);
     strcpy(new->password,password); 
-    userbgn->list->next->next=new;
-    new->next=NULL;
-    userbgn->list->next=userstart;
+     
+    userbgn->list->next=new;
     
+  
+    new->next=NULL;
+    userbgn->list=userstart2;
+    if(userstart!=NULL){
+    userbgn->list->next=userstart;
+    }
+    
+    return 1;
 }
 
 User* loginCLI(){
@@ -303,7 +351,7 @@ User* loginCLI(){
     while(confirm==0){
      printf("Please enter the user name(input quit to return)\n");
     char name[1000];
-    scanf("%s",name);
+    scanf("%[^\n]",name);
     if(strcmp(name,"quit")==0){
          fflush(stdin);
         return temp;
@@ -312,7 +360,6 @@ User* loginCLI(){
     while(userbgn->list->next!=NULL){
         if(strcmp(userbgn->list->next->name,name)==0){
            a+=1;
-           userbgn->list->next=userstart;
            break;  
         }
         userbgn->list->next=userbgn->list->next->next;
@@ -328,7 +375,7 @@ User* loginCLI(){
     while(confirm2==0){
     printf("Please enter the password(input quit to return)\n");
     char password[1000];
-    scanf("%s",password);
+    scanf("%[^\n]",password);
      if(strcmp(password,"quit")==0){
           fflush(stdin);
         return temp;
@@ -361,10 +408,15 @@ return final;
 
 
 void closecil(FILE* book,FILE* user,FILE* history,FILE*borrow){
+    
     store_books(book);
+    
     store_user(user);
+ 
     store_history(history);
+    
   store_borrowed(borrow);
+    
     User* temp;
     Book* temp2;
     User * temp3;
@@ -379,7 +431,7 @@ void closecil(FILE* book,FILE* user,FILE* history,FILE*borrow){
         userbgn->list->next=userbgn->list->next->next;
         free(temp);
     }
-     
+      
      while(bgn->list->next!=NULL){
           while(bgn->list->next->history->next!=NULL){
             temp3=bgn->list->next->history->next;
@@ -393,7 +445,7 @@ void closecil(FILE* book,FILE* user,FILE* history,FILE*borrow){
         
     }
     
-    
+   
     free(userbgn->list);
     free(bgn->list);
     free(bgn);
@@ -439,11 +491,14 @@ int Borrowbooks(User* logeduser){
        }
    } 
    bgn->list->next->copies-=1;
+  
     Book* temp2=logeduser->bookborrow;
+   
   while(logeduser->bookborrow->next!=NULL){
+     
       logeduser->bookborrow=logeduser->bookborrow->next;
   }
-  
+ 
    logeduser->bookborrow->next=(Book*)malloc(sizeof(Book));
    logeduser->bookborrow->next->id=bgn->list->next->id;
    logeduser->bookborrow->next->year=bgn->list->next->year;
@@ -454,6 +509,7 @@ int Borrowbooks(User* logeduser){
    logeduser->number+=1;
    User *temp=bgn->list->next->history;
    while(bgn->list->next->history->next!=NULL){
+      
         bgn->list->next->history=bgn->list->next->history->next;
    }
    
@@ -476,7 +532,7 @@ if(temp==NULL){
     printf("\nYou have not borrowed any book\n");
     return 0;
 }
- printf("%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR");
+ printf("\n%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR");
     while(logeduser->bookborrow->next!=NULL){  
          printf("%-10d\t%-10s\t%-10s\t%-10d\n",logeduser->bookborrow->next->id,logeduser->bookborrow->next->authors,logeduser->bookborrow->next->title,logeduser->bookborrow->next->year);
         logeduser->bookborrow->next=logeduser->bookborrow->next->next;
@@ -508,7 +564,7 @@ Book* temp=logeduser->bookborrow->next;
             logeduser->bookborrow->next=logeduser->bookborrow->next->next;
             if(logeduser->bookborrow->next==NULL){
            logeduser->bookborrow->next=temp;
-           printf("Error,id is out of range");
+           printf("Error,id is out of range\n");
            
            return 0;
        }
@@ -520,7 +576,7 @@ Book* temp=logeduser->bookborrow->next;
         }
         bgn->list->next=bgn->list->next->next;
         if(bgn->list->next==NULL){
-            printf("The book has been deleted");
+            printf("The book has been deleted\n");
         }
     }
     bgn->list->next=bookstart;
@@ -551,14 +607,14 @@ Book* temp=logeduser->bookborrow->next;
 
 void showhistory(){
      Book* bookstart=bgn->list->next;
-      printf("%-10s\t%-10s\n","Title","Name~~");   
+     
+      printf("\n%-10s\t%-10s\n","Title","Name");   
     while(bgn->list->next!=NULL){   
         printf("%-10s\t",bgn->list->next->title);   
          User *temp=bgn->list->next->history->next;
         while(bgn->list->next->history->next!=NULL){
             printf("%-10s\t",bgn->list->next->history->next->name);
-              bgn->list->next->history->next= bgn->list->next->history->next->next;  
-                      
+              bgn->list->next->history->next= bgn->list->next->history->next->next;                
         }
          bgn->list->next->history->next=temp; 
         bgn->list->next=bgn->list->next->next;
@@ -677,9 +733,64 @@ User *logininguser;
         else if(option==3){
             printf("\n Add book\n");
             
+            int year;
+            int copies;
+            Book *new=(Book*)malloc(sizeof(Book));
+            new->history=(User*)malloc(sizeof(User));
+            new->history->next=NULL;
+            printf("\nPlease input book id\n");
+           int x;
+          x=optionChoice();
+         if(x==-1){
+       printf("\n You should input a digit \n");
+            fflush(stdin);
+            continue;
+             }
+             new->id=x;
+            printf("\nPlease input book year\n");
+           
+   x=optionChoice();
+   if(x==-1){
+       printf("\n You should input a digit \n");
+            fflush(stdin);
+            continue;
+   }
+   new->year=x;
+            
+        printf("\nPlease input book copies\n");
+               
+        x=optionChoice();
+            if(x==-1){
+       printf("\n You should input a digit \n");
+            fflush(stdin);
+            continue;            
+   }
+        new->copies=x;
+              printf("\nPlease input book author\n");
+              new->authors=(char*)malloc(100*sizeof(char));
+              scanf("%[^\n]",new->authors);
+              fflush(stdin);
+               printf("\nPlease input book title\n");
+              new->title=(char*)malloc(100*sizeof(char));
+              scanf("%[^\n]",new->title);
+              fflush(stdin);
+              add_book(new);
+            
         }
         else if(option==4){
+            int id;
+            Book temp;
             printf("\n Remove book\n");
+             printf("\nPlease input book id\n");
+           int x;
+          x=optionChoice();
+         if(x==-1){
+       printf("\n You should input a digit \n");
+            fflush(stdin);
+            continue;
+             }
+             temp.id=x;
+            remove_book(temp);
         }
           else if(option==5){
               printf("Show History\n");
