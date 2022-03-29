@@ -1,198 +1,16 @@
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 
-#include"library.h"
-#include"projectheader.h"
-
+#include"login_register.h"
+#include"bookmanagement.h"
+#include"show.h"
 #include"lo_st.h"
 #include"myutility.h"
 
 BookList* bgn;
 Userlist *userbgn;
 
-
-
-
-int registerCLI(){
-    User *userstart=userbgn->list->next;
-    
-    User * userstart2=userbgn->list;
-   
-
-   start:
-    printf("\n Please enter the user name(input quit to return)\n");
-    char name[1000];
-    scanf("%[^\n]",name);
-    fflush(stdin);
-   if(strcmp(name,"quit")==0){
-         fflush(stdin);
-        return 0;
-    }
-    while(userbgn->list->next!=NULL){      
-        if(strcmp(userbgn->list->next->name,name)==0){
-            printf("Error,this name has already been used.");
-            userbgn->list->next=userstart;
-            goto start;
-        }
-        userbgn->list->next=userbgn->list->next->next;
-       
-    }
-    printf("\n Please enter the password\n");
-    char password[1000];
-    scanf("%[^\n]",password);
-     fflush(stdin);
-    userbgn->list->next=userstart;
-    while(userbgn->list->next!=NULL){     
-        userbgn->list=userbgn->list->next;
-    }
-    
-    User* new=(User*)malloc(sizeof(User));
-    new->name=(char *)malloc(1000*sizeof(char));
-    new->password=(char *)malloc(1000*sizeof(char));
-    new->bookborrow=(Book*)malloc(sizeof(Book));
-    new->bookborrow->next=NULL;
-    new->number=0;
-    userbgn->length+=1;
-    strcpy(new->name,name);
-    strcpy(new->password,password); 
-     
-    userbgn->list->next=new;
-    
-  
-    new->next=NULL;
-    userbgn->list=userstart2;
-    if(userstart!=NULL){
-    userbgn->list->next=userstart;
-    }
-    
-    return 1;
-}
-
-
-
-
-User* loginCLI(){
-    
-    int a=0;
-    int b=0;
-    int confirm=0;
-    int confirm2=0;
-    User *userstart=userbgn->list->next;
-    User* final;
-    User* temp=NULL;
-    while(confirm==0){
-     printf("Please enter the user name(input quit to return)\n");
-    char name[1000];
-    scanf("%[^\n]",name);
-    if(strcmp(name,"quit")==0){
-         fflush(stdin);
-        return temp;
-    }
-    fflush(stdin);
-    while(userbgn->list->next!=NULL){
-        if(strcmp(userbgn->list->next->name,name)==0){
-           a+=1;
-           break;  
-        }
-        userbgn->list->next=userbgn->list->next->next;
-    }
-    if(a==0){
-         printf("Error, there is no that name\n");
-         userbgn->list->next=userstart;
-    }
-    else{
-        confirm+=1;
-    }
-    }
-    while(confirm2==0){
-    printf("Please enter the password(input quit to return)\n");
-    char password[1000];
-    scanf("%[^\n]",password);
-     if(strcmp(password,"quit")==0){
-          fflush(stdin);
-        return temp;
-    }
-     fflush(stdin);
-     while(userbgn->list->next!=NULL){
-        if(strcmp(userbgn->list->next->password,password)==0){
-           b+=1;
-           final=userbgn->list->next;
-           userbgn->list->next=userstart;
-           break;  
-        }
-        userbgn->list->next=userbgn->list->next->next;
-    }
-    if(b==0){
-        printf("Error, the password is wrong\n");
-        userbgn->list->next=userstart;
-        
-    }
-    else{ printf("Successfully Logined\n");
-            confirm2=1;}
-   
-
-}
-return final;
-}
-
-
-
-
-
-int librarianlogin(){
-     int a=0;
-    int b=0;
-    int confirm=0;
-    int confirm2=0;
-    
-    while(confirm==0){
-     printf("Please enter the user name(input quit to return)\n");
-    char name[1000];
-    scanf("%[^\n]",name);
-    if(strcmp(name,"quit")==0){
-         fflush(stdin);
-        return 0;
-    }
-    fflush(stdin);
-        if(strcmp("librarian",name)==0){
-           a+=1;
-           break;  
-        }
-    if(a==0){
-         printf("Error, the name is wrong\n");
-    }
-    else{
-        confirm+=1;
-    }
-    }
-    while(confirm2==0){
-    printf("Please enter the password(input quit to return)\n");
-    char password[1000];
-    scanf("%[^\n]",password);
-     if(strcmp(password,"quit")==0){
-          fflush(stdin);
-          return 0;
-    }
-     fflush(stdin);
-   
-        if(strcmp("librarian",password)==0){
-           b+=1;
-          
-           break;  
-        }
-   
-    if(b==0){
-        printf("Error, the password is wrong\n");
-        
-    }
-    else{ printf("Successfully Logined\n");
-            confirm2=1;
-            }
-}
-   return 1;
-}
 
 
 
@@ -288,7 +106,7 @@ User *logininguser;
         }
     }
     while(libraryopen&&login==2){
-    printf("\n Please choose an option\n 1)Search for books\n 2)Display all books\n 3)Add book\n 4)Remove book\n 5)Show History\n 6)Back to previous\n 7)Exit\n Choice:");
+    printf("\n Please choose an option\n 1)Search for books\n 2)Display all books\n 3)Add book\n 4)Remove book\n 5)Show History\n 6)Show borrowing\n 7)Back to previous\n 8)Exit\n Choice:");
        option = optionChoice();
         if( option == 1 ) {
             printf("\nSearch for books\n");
@@ -306,17 +124,8 @@ User *logininguser;
             Book new;
             new.history=(User*)malloc(sizeof(User));
             new.history->next=NULL;
-            printf("\nPlease input book id\n");
-           int x;
-          x=optionChoice();
-         if(x==-1){
-       printf("\n You should input a digit \n");
-            fflush(stdin);
-            continue;
-             }
-             new.id=x;
-            printf("\nPlease input book year\n");
-           
+          int x;
+            printf("\nPlease input book year\n");      
    x=optionChoice();
    if(x==-1){
        printf("\n You should input a digit \n");
@@ -361,15 +170,22 @@ User *logininguser;
             remove_book(temp);
         }
           else if(option==5){
-              printf("Show History\n");
+              printf("\nShow History\n");
             showhistory();
         }
-        else if(option==6){
+
+          else if(option==6){
+            printf("\nShow borrowing\n");
+            showborrowing();
+        
+        }
+        else if(option==7){
             printf("\nBack\n");
             login=0;
-            
+        
         }
-         else if(option==7){
+
+         else if(option==8){
             printf("\nClose\n");
             closecil(book,user,history,borrow);
             libraryopen=0;
@@ -384,3 +200,53 @@ User *logininguser;
 
 }
 }
+
+
+
+
+void closecil(FILE* book,FILE* user,FILE* history,FILE*borrow){
+    
+    store_books(book);
+    
+    store_user(user);
+ 
+    store_history(history);
+    
+  store_borrowed(borrow);
+    
+    User* temp;
+    Book* temp2;
+    User * temp3;
+    Book* temp4;
+    while(userbgn->list->next!=NULL){
+        while(userbgn->list->next->bookborrow->next!=NULL){
+             temp4=userbgn->list->next->bookborrow->next;
+             userbgn->list->next->bookborrow->next=userbgn->list->next->bookborrow->next->next;
+             free(temp4);
+        }
+        temp=userbgn->list->next;
+        userbgn->list->next=userbgn->list->next->next;
+        free(temp);
+    }
+      
+     while(bgn->list->next!=NULL){
+          while(bgn->list->next->history->next!=NULL){
+            temp3=bgn->list->next->history->next;
+            bgn->list->next->history->next=bgn->list->next->history->next->next;
+            free(temp3);
+        }
+         free(bgn->list->next->history);
+        temp2=bgn->list->next;
+        bgn->list->next=bgn->list->next->next;
+        free(temp2);
+        
+    }
+    
+   
+    free(userbgn->list);
+    free(bgn->list);
+    free(bgn);
+    free(userbgn);
+   
+}
+

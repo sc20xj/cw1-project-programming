@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "projectheader.h"
+#include "bookmanagement.h"
 #include"lo_st.h"
-#include"library.h"
+#include"login_register.h"
 
 
 int main( int argc, char **argv )
