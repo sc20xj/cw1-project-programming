@@ -6,36 +6,40 @@
 #include"bookmanagement.h"
 #include"show.h"
 #include"lo_st.h"
-
-BookList* bgn;
-Userlist *userbgn;
+#include"structure.h"
+BookList* bgn;//the pointer to the booklist
+Userlist *userbgn;//the pointer to the userlist
 
 //adds a book to the ones available to the library
 //returns 0 if the book could be added, or an error code otherwise
 int add_book(Book book){
    
-     Book* liststart=bgn->list->next;
+     Book* liststart=bgn->list->next;//save the head pointer of the book link list
     
-     Book* aimbook=(Book*)malloc(sizeof(Book));
-     aimbook->history=(User*)malloc(sizeof(User));
+     Book* aimbook=(Book*)malloc(sizeof(Book));//allocate the address of the newly added book
+     aimbook->history=(User*)malloc(sizeof(User));//allocate the address of the history of newly added book
       aimbook->history->next=NULL;
+
+      //if there is no book in the booklist
       if(bgn->list->next!=NULL){
      int a=0;
     
     while(bgn->list->next!=NULL){
         if(strcmp(bgn->list->next->title,book.title)==0){
             a=1;
-            break;
+            break;//if the added book's title is the same as previous one,out of the loop
         }
         bgn->list->next=bgn->list->next->next;
     }
     bgn->list->next=liststart;
     if(a==1){
+        //copies plus one if the added book's title is the same as previous one
         bgn->list->next->copies+=1;
         bgn->list->next=liststart;
         printf("\nThe title is same with the former one,copies has been added 1\n");
     }
     else{
+     //the added book is new,set the information of the new book
     while(bgn->list->next->next!=NULL){
         bgn->list->next=bgn->list->next->next;
     }
@@ -59,8 +63,9 @@ int add_book(Book book){
      printf("\nSuccessfully added\n");
     return 0;
      }
-     else{
-         
+
+   //set the book information of the situation that the booklist is empty
+     else{  
     bgn->list->next=aimbook;
     aimbook->titlesize=strlen(book.title)+1;
     aimbook->authorsize=strlen(book.authors)+1;
@@ -84,28 +89,34 @@ int add_book(Book book){
 //returns 0 if the book could be successfully removed, or an error code otherwise.
 int remove_book(Book book){
     
+    //To judge if the booklist is empty
      if(bgn->list->next==NULL){
         printf("\nThis list is NULL\n");
         return -1;
      }
+
    
-     Book* liststart=bgn->list->next;
+     Book* liststart=bgn->list->next;//save the head pointer of the book link list
+    
+    //running through the list to find if there is the assigned book
     while(bgn->list->next->id!=book.id){
         bgn->list->next=bgn->list->next->next;
+        //if there is no assigned book,return
         if(bgn->list->next==NULL){
              printf("\nThere is no assigned book in the list\n");
              bgn->list->next=liststart;
              return -1;
         }
     }
-    
+    //if someone is borrowing this book,it can not be removed
     if(bgn->list->next->id==book.id){
         if(bgn->list->next->borrowing>0){
-            printf("%s",bgn->list->next->title);
             printf("\nError,someone is borrowing this book\n");
             bgn->list->next=liststart;
             return 0;
         }
+
+        //remove the book and reconnect the linklist
         User* usertemp=userbgn->list->next;
         Book* temp2=bgn->list->next->next;
       
@@ -142,12 +153,8 @@ int remove_book(Book book){
             while(bgn->list->next->next!=temp){
                 bgn->list->next=bgn->list->next->next;
             }
-           
             bgn->list->next->next=temp->next;
-
             bgn->length-=1;
-            
-           
             bgn->list->next=liststart;
         }
         return 0;
@@ -173,6 +180,7 @@ BookList find_book_by_title (const char *title){
     Book* booknew=(Book*)malloc(sizeof(Book));
     Book* start=booknew;
     int a=0;
+    //ruuning through the booklist to find if there is assigned book
     for (int i=0; i< bgn->length; i++) {
 			if (!strcmp(bgn->list->next->title, title)){  
                    
@@ -215,6 +223,8 @@ BookList find_book_by_author (const char *author){
     Book* booknew=(Book*)malloc(sizeof(Book));
     Book* start=booknew;
     int a=0;
+
+    //ruuning through the booklist to find if there is assigned book
     for (int i=0; i< bgn->length; i++) {
 			if (!strcmp(bgn->list->next->authors, author)){  
                    
@@ -259,6 +269,8 @@ BookList find_book_by_year (unsigned int year){
     Book* booknew=(Book*)malloc(sizeof(Book));
     Book* start=booknew;
     int a=0;
+
+    //ruuning through the booklist to find if there is assigned book
     for (int i=0; i< bgn->length; i++) {
 			if(bgn->list->next->year==year){  
                booknew->id=bgn->list->next->id;
@@ -290,103 +302,30 @@ BookList find_book_by_year (unsigned int year){
 
 
 
-void searchbooks(){
-     int open=1;
-      int option;
-     while(open==1){
-      printf("\n Please choose an option\n 1)search by title\n 2)search by author\n 3)search by year\n 4)Exit Search\nChoice:");
-      option = optionChoice();
-      char searching[1000];
-     
-     
-       if( option == 1 ) {
-            printf("\nSearch by title\n");
-            scanf("%[^\n]",searching);
-            getchar();
-            BookList search;
-            search=find_book_by_title(searching);
-            if(search.list==NULL){
-                open = 0;
-            }
-            else{
-            printf("%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
-            for(int i=0;i<search.length;i++){
-                printf("%-10d\t%-10s\t%-10s\t%-10d\t%-10d\n",search.list->id,search.list->authors,search.list->title,search.list->year,search.list->copies);
-                search.list=search.list->next;
-            }
-            open=0;
-            }
-        }
-        else if( option == 2 ) {
-            printf("\nSearch by author\n");
-            scanf("%[^\n]",searching);
-            getchar();
-             BookList search;
-            search=find_book_by_author(searching);
-            if(search.list==NULL){
-                open = 0;
-            }
-            else{
-            printf("%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
-             for(int i=0;i<search.length;i++){
-                printf("%-10d\t%-10s\t%-10s\t%-10d\t%-10d\n",search.list->id,search.list->authors,search.list->title,search.list->year,search.list->copies);
-                search.list=search.list->next;
-            }
-            open=0;
-            }
-        }
-        else if( option == 3 ) {
-            int x;
-            printf("\nSearch by year\n");
-            x=optionChoice();
-            if(x==-1){
-                printf("\n You should input a year \n");
-                fflush(stdin);
-            }
-            else{
-             BookList search;
-             fflush(stdin);
-            search=find_book_by_year(x);
-            if(search.list==NULL){
-                open = 0;
-            }
-            else{
-             printf("%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
-             for(int i=0;i<search.length;i++){
-                printf("%-10d\t%-10s\t%-10s\t%-10d\t%-10d\n",search.list->id,search.list->authors,search.list->title,search.list->year,search.list->copies);
-                search.list=search.list->next;
-            }
-            }
-            
-            open=0;
-            }
-        }
-       
-        else if(option==4){
-            printf("\n Exit Search\n");
-            open=0;
-        }
-         else{
-          printf("\nUnknown option\n");
-        }
-      }
-}
 
-
-
+//finds books published in the given year.
+//returns a Booklist structure, where the field "list" is a list of books, or null if no book with the 
+//provided title can be found. The length of the list is also recorded in the returned structure, with 0 in case
+//list is the NULL pointer.
 int Borrowbooks(User* logeduser){
-   listavailablebook();
+   int a=listavailablebook();
+if(a==0){
+return 0;
+}
    printf("\nwhich do you want to borrow: ");
   int id;
+  //get the choice of users
   id=optionChoice();
+
+  //To judge if the choice is valid
    if(id==-1){
            printf("\n You should input a digit \n");
-            fflush(stdin);
    }
    else{
-        fflush(stdin);
+       
    Book* bookstart=bgn->list->next;
   
+  //running through the list to find if there is assigned book existing
    while(bgn->list->next->id!=id){
        
        bgn->list->next=bgn->list->next->next;
@@ -397,6 +336,9 @@ int Borrowbooks(User* logeduser){
            return 0;
        }
    } 
+
+   //if there is assigned book, set the relative information
+   //includeing the borrowed history and user borrowing list.
    bgn->list->next->copies-=1;
   
     Book* temp2=logeduser->bookborrow;
@@ -432,13 +374,15 @@ int Borrowbooks(User* logeduser){
   bgn->list->next->history=temp;
    bgn->list->next=bookstart;
     printf("\nsuccessfully borrowed the book\n");
-    return 1;
+    
    }
+return 1;
 }
 
 
 
-
+//For users to return books to the library
+//return 1 if the book is returned successfully, or the error codes otherwise.
 int return_book(User* logeduser){
     int y;
 y=showborrowed(logeduser);
@@ -450,11 +394,16 @@ Book* temp2=logeduser->bookborrow;
 Book* temp=logeduser->bookborrow->next;
     printf("\nwhich do you want to return: ");
    int id;
+
+   //get the users choice
    id=optionChoice();
+
+   //To judge if the choice is valid
    if(id==-1){
-       printf("\n You should input a digit \n");
-            fflush(stdin);
+       printf("\n You should input a digit \n");     
    }
+
+   //To judge if the assigned book is existing
    else{
     if(logeduser->bookborrow->next!=NULL){
     while(logeduser->bookborrow->next->id!=id){
@@ -462,21 +411,19 @@ Book* temp=logeduser->bookborrow->next;
             if(logeduser->bookborrow->next==NULL){
            logeduser->bookborrow->next=temp;
            printf("Error,id is out of range\n");
-           
            return 0;
        }
     }
+
     while(bgn->list->next!=NULL){
         if(bgn->list->next->id==id){
             bgn->list->next->copies+=1;
             break;
         }
         bgn->list->next=bgn->list->next->next;
-        if(bgn->list->next==NULL){
-            printf("The book has been deleted\n");
-        }
     }
-    
+
+    //set the relative information and the relative list structure
     bgn->list->next->borrowing-=1;
      
     bgn->list->next=bookstart;
@@ -496,7 +443,9 @@ Book* temp=logeduser->bookborrow->next;
     else{
         printf("You have not borrowed any books");
     }
+
    }
+return 1;
 }
 
 

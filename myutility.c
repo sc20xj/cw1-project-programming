@@ -4,11 +4,6 @@
 #include <ctype.h>
 #include "myutility.h"
 
-////
-// Utility functions to handle "safer" string input
-//
-
-// DONT ALTER THESE FUNCTIONS
 
 // read in a line of text and convert to an integer option
 
@@ -34,16 +29,3 @@ int optionChoice( void ) {
 }
      }
     
-
-// remove newline character from the fgets() input
-
-void removeNewLine(char* string) {
-
-    size_t length = strlen(string);
-
-    if((length > 0) && (string[length-1] == '\n')) {
-        string[length-1] ='\0';
-    }
-    return;
-}
-

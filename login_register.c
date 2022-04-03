@@ -4,17 +4,18 @@
 #include<string.h>
 
 #include"login_register.h"
-#include"bookmanagement.h"
+#include"structure.h"
 
 #include"lo_st.h"
 #include"myutility.h"
 
-BookList* bgn;
-Userlist *userbgn;
+BookList* bgn;//the pointer to the booklist
+Userlist *userbgn;//the pointer to the user list
 
 
 
-
+//The function to register for users, return 1 if register successfully
+//or the error codes otherwise.
 int registerCLI(){
     User *userstart=userbgn->list->next;
     
@@ -25,11 +26,14 @@ int registerCLI(){
     printf("\n Please enter the user name(input quit to return)\n");
     char name[1000];
     scanf("%[^\n]",name);
-    fflush(stdin);
+    getchar();
+
+    //input "quit" so that to quit
    if(strcmp(name,"quit")==0){
-         fflush(stdin);
+       
         return 0;
     }
+    //To judge if the name input was already used by others
     while(userbgn->list->next!=NULL){      
         if(strcmp(userbgn->list->next->name,name)==0){
             printf("Error,this name has already been used.");
@@ -43,7 +47,7 @@ int registerCLI(){
     printf("\n Please enter the password\n");
     char password[1000];
     scanf("%[^\n]",password);
-     fflush(stdin);
+     getchar();
     userbgn->list->next=userstart;
     while(userbgn->list->next!=NULL){     
         userbgn->list=userbgn->list->next;
@@ -68,13 +72,14 @@ int registerCLI(){
     if(userstart!=NULL){
     userbgn->list->next=userstart;
     }
-    printf("\nSuccessfully registered\n");
+   
     return 1;
 }
 
 
 
-
+//The function to Login for users, return the user struct pointer if it successfully logined
+//or the error codes otherwise.
 User* loginCLI(){
     
     int a=0;
@@ -84,15 +89,20 @@ User* loginCLI(){
     User *userstart=userbgn->list->next;
     User* final;
     User* temp=NULL;
+   
     while(confirm==0){
      printf("Please enter the user name(input quit to return)\n");
     char name[1000];
     scanf("%[^\n]",name);
+
+    //input "quit" so that to quit
     if(strcmp(name,"quit")==0){
-         fflush(stdin);
+       
         return temp;
     }
-    fflush(stdin);
+        getchar();
+
+    //To judge if the name is existing
     while(userbgn->list->next!=NULL){
         if(strcmp(userbgn->list->next->name,name)==0){
            a+=1;
@@ -113,10 +123,12 @@ User* loginCLI(){
     char password[1000];
     scanf("%[^\n]",password);
      if(strcmp(password,"quit")==0){
-          fflush(stdin);
+         getchar();
         return temp;
     }
-     fflush(stdin);
+        getchar();
+
+    //To judge if the password is correct
      while(userbgn->list->next!=NULL){
         if(strcmp(userbgn->list->next->password,password)==0){
            b+=1;
@@ -139,6 +151,12 @@ User* loginCLI(){
 return final;
 }
 
+
+
+
+
+//The function for librarian to login, return 1  if it successfully logined
+//or the error codes otherwise.
 int  librarianlogin(){
      int a=0;
     int b=0;
@@ -149,11 +167,13 @@ int  librarianlogin(){
      printf("Please enter the user name(input quit to return)\n");
     char name[1000];
     scanf("%[^\n]",name);
+     //input "quit" so that to quit
     if(strcmp(name,"quit")==0){
-         fflush(stdin);
+        getchar();
         return 0;
     }
-    fflush(stdin);
+        getchar();
+    //To judge if the name input is "librarian"
         if(strcmp("librarian",name)==0){
            a+=1;
            break;  
@@ -170,11 +190,11 @@ int  librarianlogin(){
     char password[1000];
     scanf("%[^\n]",password);
      if(strcmp(password,"quit")==0){
-          fflush(stdin);
+         getchar();
           return 0;
     }
-     fflush(stdin);
-   
+        getchar();
+   //To judge if the librarian password is "librarian"
         if(strcmp("librarian",password)==0){
            b+=1;
           
@@ -189,7 +209,7 @@ int  librarianlogin(){
             confirm2=1;
             }
 }
-   printf("\nSuccessfully logined\n");
+  
    return 1;
 }
 

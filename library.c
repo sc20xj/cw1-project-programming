@@ -3,18 +3,159 @@
 #include<string.h>
 
 #include"login_register.h"
-#include"bookmanagement.h"
+#include"structure.h"
 #include"show.h"
 #include"lo_st.h"
 #include"myutility.h"
 
-BookList* bgn;
-Userlist *userbgn;
+BookList* bgn;//the pointer to the booklist
+Userlist *userbgn;//the pointer to the user list
 
 
 
+//The function to close the library, including free the allocated address
+void closecil(FILE* book,FILE* user,FILE* history,FILE*borrow){
+    
+    store_books(book);
+    
+    store_user(user);
+ 
+    store_history(history);
+    
+    store_borrowed(borrow);
+    
+    User* temp;
+    Book* temp2;
+    User * temp3;
+    Book* temp4;
+
+    //running through the userlist to free the allocated address of users' book borrow list and userlist
+    while(userbgn->list->next!=NULL){
+        while(userbgn->list->next->bookborrow->next!=NULL){
+             temp4=userbgn->list->next->bookborrow->next;
+             userbgn->list->next->bookborrow->next=userbgn->list->next->bookborrow->next->next;
+             //free each book borrow node
+             free(temp4);
+        }
+        temp=userbgn->list->next;
+        userbgn->list->next=userbgn->list->next->next;
+        //free each user node
+        free(temp);
+    }
+      
+       //running through the booklist to free the allocated address of book's history list and booklist
+     while(bgn->list->next!=NULL){
+          while(bgn->list->next->history->next!=NULL){
+            temp3=bgn->list->next->history->next;
+            bgn->list->next->history->next=bgn->list->next->history->next->next;
+            //free each history node
+            free(temp3);
+        }
+         free(bgn->list->next->history);
+        temp2=bgn->list->next;
+        bgn->list->next=bgn->list->next->next;
+        //free each book node
+        free(temp2);
+        
+    }
+    
+   
+    free(userbgn->list);
+    free(bgn->list);
+    free(bgn);
+    free(userbgn);
+   
+}
 
 
+//The search books system.
+void searchbooks(){
+     int open=1;
+      int option;
+     while(open==1){
+      printf("\n Please choose an option\n 1)search by title\n 2)search by author\n 3)search by year\n 4)Exit Search\nChoice:");
+      option = optionChoice();
+      char searching[1000];
+     
+     
+       if( option == 1 ) {
+            printf("\nSearch by title\n");
+            scanf("%[^\n]",searching);
+            getchar();
+            BookList search;
+            search=find_book_by_title(searching);
+            if(search.list==NULL){
+                open = 0;
+            }
+            //show the search result
+            else{
+            printf("%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
+            for(int i=0;i<search.length;i++){
+                printf("%-10d\t%-10s\t%-10s\t%-10d\t%-10d\n",search.list->id,search.list->authors,search.list->title,search.list->year,search.list->copies);
+                search.list=search.list->next;
+            }
+            open=0;
+            }
+        }
+        else if( option == 2 ) {
+            printf("\nSearch by author\n");
+            scanf("%[^\n]",searching);
+            getchar();
+             BookList search;
+            search=find_book_by_author(searching);
+            if(search.list==NULL){
+                open = 0;
+            }
+             //show the search result
+            else{
+            printf("%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
+             for(int i=0;i<search.length;i++){
+                printf("%-10d\t%-10s\t%-10s\t%-10d\t%-10d\n",search.list->id,search.list->authors,search.list->title,search.list->year,search.list->copies);
+                search.list=search.list->next;
+            }
+            open=0;
+            }
+        }
+        else if( option == 3 ) {
+            int x;
+            printf("\nSearch by year\n");
+            x=optionChoice();
+            if(x==-1){
+                printf("\n You should input a year \n");
+                getchar();
+            }
+            else{
+             BookList search;
+                getchar();
+            search=find_book_by_year(x);
+            if(search.list==NULL){
+                open = 0;
+            }
+             //show the search result
+            else{
+             printf("%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
+             for(int i=0;i<search.length;i++){
+                printf("%-10d\t%-10s\t%-10s\t%-10d\t%-10d\n",search.list->id,search.list->authors,search.list->title,search.list->year,search.list->copies);
+                search.list=search.list->next;
+            }
+            }
+            
+            open=0;
+            }
+        }
+       
+        else if(option==4){
+            printf("\n Exit Search\n");
+            open=0;
+        }
+         else{
+          printf("\nUnknown option\n");
+        }
+      }
+}
+
+
+// The whole system of this app, which connected each part together
 void librarycil(FILE* book,FILE* user,FILE* history,FILE* borrow){
 int libraryopen=1;
 int option;
@@ -119,8 +260,7 @@ User *logininguser;
         else if(option==3){
             printf("\n Add book\n");
             
-            int year;
-            int copies;
+           //create the book entity to store and pass information
             Book new;
             new.history=(User*)malloc(sizeof(User));
             new.history->next=NULL;
@@ -129,7 +269,7 @@ User *logininguser;
    x=optionChoice();
    if(x==-1){
        printf("\n You should input a digit \n");
-            fflush(stdin);
+       getchar();
             continue;
    }
    new.year=x;
@@ -139,23 +279,23 @@ User *logininguser;
         x=optionChoice();
             if(x==-1){
        printf("\n You should input a digit \n");
-            fflush(stdin);
+                getchar();
             continue;            
    }
         new.copies=x;
               printf("\nPlease input book author\n");
               new.authors=(char*)malloc(100*sizeof(char));
               scanf("%[^\n]",new.authors);
-              fflush(stdin);
+               getchar();
                printf("\nPlease input book title\n");
               new.title=(char*)malloc(100*sizeof(char));
               scanf("%[^\n]",new.title);
-              fflush(stdin);
+             getchar();
               add_book(new);
             
         }
         else if(option==4){
-            int id;
+            
             Book temp;
             printf("\n Remove book\n");
              printf("\nPlease input book id\n");
@@ -163,7 +303,7 @@ User *logininguser;
           x=optionChoice();
          if(x==-1){
        printf("\n You should input a digit \n");
-            fflush(stdin);
+             getchar();
             continue;
              }
              temp.id=x;
@@ -202,51 +342,4 @@ User *logininguser;
 }
 
 
-
-
-void closecil(FILE* book,FILE* user,FILE* history,FILE*borrow){
-    
-    store_books(book);
-    
-    store_user(user);
- 
-    store_history(history);
-    
-  store_borrowed(borrow);
-    
-    User* temp;
-    Book* temp2;
-    User * temp3;
-    Book* temp4;
-    while(userbgn->list->next!=NULL){
-        while(userbgn->list->next->bookborrow->next!=NULL){
-             temp4=userbgn->list->next->bookborrow->next;
-             userbgn->list->next->bookborrow->next=userbgn->list->next->bookborrow->next->next;
-             free(temp4);
-        }
-        temp=userbgn->list->next;
-        userbgn->list->next=userbgn->list->next->next;
-        free(temp);
-    }
-      
-     while(bgn->list->next!=NULL){
-          while(bgn->list->next->history->next!=NULL){
-            temp3=bgn->list->next->history->next;
-            bgn->list->next->history->next=bgn->list->next->history->next->next;
-            free(temp3);
-        }
-         free(bgn->list->next->history);
-        temp2=bgn->list->next;
-        bgn->list->next=bgn->list->next->next;
-        free(temp2);
-        
-    }
-    
-   
-    free(userbgn->list);
-    free(bgn->list);
-    free(bgn);
-    free(userbgn);
-   
-}
 
