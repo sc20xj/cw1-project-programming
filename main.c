@@ -1,18 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include"structure.h"
 #include "bookmanagement.h"
 #include"lo_st.h"
 #include"login_register.h"
-
+#include"library.h"
 
 int main( int argc, char **argv )
 {
-    char history[50];
-    char user[50];
-    char userborrowed[50];
-    char books[50];
+    char history111[50];
+    char user111[50];
+    char userborrowed111[50];
+    char books111[50];
    if(strcmp( argv[1],"books.txt")!=0){
     printf("Error\nExpected use:books.txt\n"); 
     return 0;
@@ -31,15 +31,15 @@ int main( int argc, char **argv )
     printf("Error\nExpected use:userborrow.txt\n"); 
     return 0;
     }
-     strcpy(books,argv[1]);
-     strcpy(user,argv[2]);
-     strcpy(history,argv[3]);
-     strcpy(userborrowed,argv[4]);
+     strcpy(books111,argv[1]);
+     strcpy(user111,argv[2]);
+     strcpy(history111,argv[3]);
+     strcpy(userborrowed111,argv[4]);
 
-   FILE *user=fopen(user,"r+");
-   FILE *fp =fopen(books,"r+");
-   FILE *history=fopen(history,"r+");
-   FILE *borrow=fopen(userborrowed,"r+");
+   FILE *user=fopen(user111,"r+");
+   FILE *fp =fopen(books111,"r+");
+   FILE *history=fopen(history111,"r+");
+   FILE *borrow=fopen(userborrowed111,"r+");
    load_books(fp);
    load_user(user);
    load_history(history);
@@ -48,10 +48,10 @@ int main( int argc, char **argv )
    fclose(history);
    fclose(user);
    fclose(fp);
-   FILE *fp1 =fopen(books,"w");
-   FILE *user1=fopen(user,"w");
-   FILE *history1=fopen(history,"w");
-   FILE *borrow1=fopen(userborrowed,"w");
+   FILE *fp1 =fopen(books111,"w");
+   FILE *user1=fopen(user111,"w");
+   FILE *history1=fopen(history111,"w");
+   FILE *borrow1=fopen(userborrowed111,"w");
   
    librarycil(fp1,user1,history1,borrow1);
     fclose(fp1);
