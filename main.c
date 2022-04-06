@@ -13,24 +13,7 @@ int main( int argc, char **argv )
     char user111[50];
     char userborrowed111[50];
     char books111[50];
-   if(strcmp( argv[1],"books.txt")!=0){
-    printf("Error\nExpected use:books.txt\n"); 
-    return 0;
-    }
-    if(strcmp( argv[2],"user.txt")!=0){
-    printf("Error\nExpected use:user.txt\n"); 
-    return 0;
-    }
-
-    if(strcmp( argv[3],"history.txt")!=0){
-    printf("Error\nExpected use:history.txt\n"); 
-    return 0;
-    }
-
-    if(strcmp( argv[4],"userborrow.txt")!=0){
-    printf("Error\nExpected use:userborrow.txt\n"); 
-    return 0;
-    }
+   
      strcpy(books111,argv[1]);
      strcpy(user111,argv[2]);
      strcpy(history111,argv[3]);
