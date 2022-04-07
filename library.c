@@ -80,6 +80,7 @@ void searchbooks(){
      
        if( option == 1 ) {
             printf("\nSearch by title\n");
+            printf("Please input the title(Please less than 100 letters)\n");
             scanf("%[^\n]",searching);
             getchar();
             BookList search;
@@ -89,9 +90,9 @@ void searchbooks(){
             }
             //show the search result
             else{
-            printf("%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
+            printf("%-5s\t%-15s\t%-20s\t%-4s\t%-5s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
             for(int i=0;i<search.length;i++){
-                printf("%-10d\t%-10s\t%-10s\t%-10d\t%-10d\n",search.list->id,search.list->authors,search.list->title,search.list->year,search.list->copies);
+                 printf("%-5d\t%-15s\t%-20s\t%-4d\t%-5d\n",search.list->id,search.list->authors,search.list->title,search.list->year,search.list->copies);
                 search.list=search.list->next;
             }
             open=0;
@@ -99,6 +100,7 @@ void searchbooks(){
         }
         else if( option == 2 ) {
             printf("\nSearch by author\n");
+            printf("Please input the author(Please less than 100 letters)\n");
             scanf("%[^\n]",searching);
             getchar();
              BookList search;
@@ -108,9 +110,9 @@ void searchbooks(){
             }
              //show the search result
             else{
-            printf("%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
+             printf("%-5s\t%-15s\t%-20s\t%-4s\t%-5s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
              for(int i=0;i<search.length;i++){
-                printf("%-10d\t%-10s\t%-10s\t%-10d\t%-10d\n",search.list->id,search.list->authors,search.list->title,search.list->year,search.list->copies);
+                printf("%-5d\t%-15s\t%-20s\t%-4d\t%-5d\n",search.list->id,search.list->authors,search.list->title,search.list->year,search.list->copies);
                 search.list=search.list->next;
             }
             open=0;
@@ -119,23 +121,24 @@ void searchbooks(){
         else if( option == 3 ) {
             int x;
             printf("\nSearch by year\n");
+            printf("Please input the year\n");
             x=optionChoice();
             if(x==-1){
                 printf("\n You should input a year \n");
-                getchar();
+                
             }
             else{
              BookList search;
-                getchar();
+                
             search=find_book_by_year(x);
             if(search.list==NULL){
                 open = 0;
             }
              //show the search result
             else{
-             printf("%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
+             printf("%-5s\t%-15s\t%-20s\t%-4s\t%-5s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
              for(int i=0;i<search.length;i++){
-                printf("%-10d\t%-10s\t%-10s\t%-10d\t%-10d\n",search.list->id,search.list->authors,search.list->title,search.list->year,search.list->copies);
+                printf("%-5d\t%-15s\t%-20s\t%-4d\t%-5d\n",search.list->id,search.list->authors,search.list->title,search.list->year,search.list->copies);
                 search.list=search.list->next;
             }
             }
@@ -269,7 +272,7 @@ User *logininguser;
    x=optionChoice();
    if(x==-1){
        printf("\n You should input a digit \n");
-       getchar();
+       
             continue;
    }
    new.year=x;
@@ -279,15 +282,15 @@ User *logininguser;
         x=optionChoice();
             if(x==-1){
        printf("\n You should input a digit \n");
-                getchar();
+               
             continue;            
    }
         new.copies=x;
-              printf("\nPlease input book author\n");
+              printf("\nPlease input book author(Please less than 100 letters)\n");
               new.authors=(char*)malloc(100*sizeof(char));
               scanf("%[^\n]",new.authors);
                getchar();
-               printf("\nPlease input book title\n");
+               printf("\nPlease input book title(Please less than 100 letters)\n");
               new.title=(char*)malloc(100*sizeof(char));
               scanf("%[^\n]",new.title);
              getchar();
@@ -297,13 +300,13 @@ User *logininguser;
         else if(option==4){
             
             Book temp;
-            printf("\n Remove book\n");
+            printf("\nRemove book\n");
              printf("\nPlease input book id\n");
            int x;
           x=optionChoice();
          if(x==-1){
        printf("\n You should input a digit \n");
-             getchar();
+            
             continue;
              }
              temp.id=x;

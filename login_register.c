@@ -23,7 +23,7 @@ int registerCLI(){
    
 
    start:
-    printf("\n Please enter the user name(input quit to return)\n");
+    printf("\nPlease enter the user name(input quit to return),(Please less than 100 letters)\n");
     char name[1000];
     scanf("%[^\n]",name);
     getchar();
@@ -44,7 +44,7 @@ int registerCLI(){
        
     }
     
-    printf("\n Please enter the password\n");
+    printf("\nPlease enter the password(Please less than 100 letters)\n");
     char password[1000];
     scanf("%[^\n]",password);
      getchar();
@@ -164,7 +164,7 @@ int  librarianlogin(){
     int confirm2=0;
     
     while(confirm==0){
-     printf("Please enter the user name(input quit to return)\n");
+     printf("Please enter the librarian account name(input quit to return)\n");
     char name[1000];
     scanf("%[^\n]",name);
      //input "quit" so that to quit

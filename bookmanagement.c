@@ -203,6 +203,7 @@ BookList find_book_by_title (const char *title){
         if(a==0){
             printf("\nError, no such title\n");
             findbytitle.list=NULL;
+                 bgn->list->next=liststart;
             return findbytitle;
         }
         booknew=NULL;
@@ -247,6 +248,7 @@ BookList find_book_by_author (const char *author){
         if(a==0){
             printf("\nError, no such author\n");
             findbyauthor.list=NULL;
+             bgn->list->next=liststart;
             return findbyauthor;
         }
         booknew=NULL;
@@ -288,6 +290,7 @@ BookList find_book_by_year (unsigned int year){
 		}
         if(a==0){
             printf("\nError, no such year\n");
+              bgn->list->next=liststart;
             findbyyear.list=NULL;
             return findbyyear;
             
@@ -312,14 +315,18 @@ int Borrowbooks(User* logeduser){
 if(a==0){
 return 0;
 }
-   printf("\nwhich do you want to borrow: ");
+   printf("\nwhich do you want to borrow(input 0 to quit): ");
   int id;
   //get the choice of users
   id=optionChoice();
-
+  if(id==0){
+         printf("\n Back to previous \n");
+              return 0;
+}
   //To judge if the choice is valid
    if(id==-1){
            printf("\n You should input a digit \n");
+              return 0;
    }
    else{
        
@@ -392,15 +399,20 @@ if(y==0){
 Book* bookstart=bgn->list->next;
 Book* temp2=logeduser->bookborrow;
 Book* temp=logeduser->bookborrow->next;
-    printf("\nwhich do you want to return: ");
+    printf("\nwhich do you want to return(input 0 to quit): ");
    int id;
 
    //get the users choice
    id=optionChoice();
-
+ if(id==0){
+         printf("\n Back to previous \n"); 
+            return 0;
+            
+}
    //To judge if the choice is valid
    if(id==-1){
-       printf("\n You should input a digit \n");     
+       printf("\n You should input a digit \n"); 
+         return 0;    
    }
 
    //To judge if the assigned book is existing

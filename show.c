@@ -14,13 +14,14 @@ BookList* bgn; //the pointer to the booklist
 //To show the history of the books that be borrowed by different users.
 void showhistory(){
      Book* bookstart=bgn->list->next;
-      printf("\n%-10s\t%-10s\n","Title","Name");  
+        printf("%-5s\t%-15s\t\t%-15s\n","Id","Title","UserName");    
 //running through the list to print the information 
     while(bgn->list->next!=NULL){   
-        printf("%-10s\t",bgn->list->next->title);   
+            printf("%-5d\t",bgn->list->next->id);   
+        printf("%-15s\t\t",bgn->list->next->title);   
          User *temp=bgn->list->next->history->next;
         while(bgn->list->next->history->next!=NULL){
-            printf("%-10s\t",bgn->list->next->history->next->name);
+            printf("%-15s",bgn->list->next->history->next->name);
               bgn->list->next->history->next= bgn->list->next->history->next->next;                
         }
          bgn->list->next->history->next=temp; 
@@ -36,10 +37,10 @@ void showhistory(){
 //To display all the books in the library system.
 void display(){
     Book* liststart=bgn->list->next;
-    printf("%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
+    printf("%-5s\t%-15s\t%-20s\t%-4s\t%-5s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
     //running through the list to print the information
     while(bgn->list->next!=NULL){
-        printf("%-10d\t%-10s\t%-10s\t%-10d\t%-10d\n",bgn->list->next->id,bgn->list->next->authors,bgn->list->next->title,bgn->list->next->year,bgn->list->next->copies);
+        printf("%-5d\t%-15s\t%-20s\t%-4d\t%-5d\n",bgn->list->next->id,bgn->list->next->authors,bgn->list->next->title,bgn->list->next->year,bgn->list->next->copies);
         bgn->list->next=bgn->list->next->next;
     }
    
@@ -60,10 +61,10 @@ int listavailablebook(){
      }
 else{
     //running through the list to print the information
-    printf("%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
+    printf("%-5s\t%-15s\t%-20s\t%-4s\t%-5s\n", "ID", "AUTHOR", "TITLE", "YEAR","COPIES");
      while(bgn->list->next!=NULL){
          if(bgn->list->next->copies>0){
-          printf("%-10d\t%-10s\t%-10s\t%-10d\t%-10d\n",bgn->list->next->id,bgn->list->next->authors,bgn->list->next->title,bgn->list->next->year,bgn->list->next->copies);
+          printf("%-5d\t%-15s\t%-20s\t%-4d\t%-5d\n",bgn->list->next->id,bgn->list->next->authors,bgn->list->next->title,bgn->list->next->year,bgn->list->next->copies);
          }
         bgn->list->next=bgn->list->next->next;
      }
@@ -85,10 +86,10 @@ if(temp==NULL){
     printf("\nYou have not borrowed any book\n");
     return 0;
 }
- printf("\n%-10s\t%-10s\t%-10s\t%-10s\n", "ID", "AUTHOR", "TITLE", "YEAR");
+  printf("%-5s\t%-15s\t%-20s\t%-4s\n", "ID", "AUTHOR", "TITLE", "YEAR");
  //running through the list to print the information
     while(logeduser->bookborrow->next!=NULL){  
-         printf("%-10d\t%-10s\t%-10s\t%-10d\n",logeduser->bookborrow->next->id,logeduser->bookborrow->next->authors,logeduser->bookborrow->next->title,logeduser->bookborrow->next->year);
+         printf("%-5d\t%-15s\t%-20s\t%-4d\n",logeduser->bookborrow->next->id,logeduser->bookborrow->next->authors,logeduser->bookborrow->next->title,logeduser->bookborrow->next->year);
         logeduser->bookborrow->next=logeduser->bookborrow->next->next;
     }
     logeduser->bookborrow->next=temp;
@@ -100,16 +101,17 @@ if(temp==NULL){
 void showborrowing(){
     Book* bookstart=bgn->list->next;
     User* userstart=userbgn->list->next;
-     printf("\n%-10s\t%-10s\n","Title","Name"); 
+      printf("%-5s\t%-15s\t\t%-15s\n","Id","Title","UserName");  
      //running through the list to print the information
      while (bgn->list->next!=NULL){
-          printf("%-10s\t",bgn->list->next->title);   
+printf("%-5d\t",bgn->list->next->id);   
+          printf("%-15s\t\t",bgn->list->next->title);   
          if(bgn->list->next->borrowing>0){
             while(userbgn->list->next!=NULL){
                 Book* temp=userbgn->list->next->bookborrow->next;
                 while(userbgn->list->next->bookborrow->next!=NULL){
                 if(userbgn->list->next->bookborrow->next->id==bgn->list->next->id){
-                     printf("%-10s\t",userbgn->list->next->name);    
+                     printf("%-15s",userbgn->list->next->name);    
                 }
                 userbgn->list->next->bookborrow->next=userbgn->list->next->bookborrow->next->next;
                 }
