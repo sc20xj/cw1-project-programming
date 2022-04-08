@@ -199,8 +199,12 @@ User *logininguser;
          }
         }
          else if(option==3){
+               printf("\nBack to previous\n");
             login=0;
         }
+                 else{
+              printf("\nUnknown option\n");
+}
         }
         else if(option==3){
             printf("Exit");
